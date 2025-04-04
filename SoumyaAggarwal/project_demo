@@ -1,0 +1,44 @@
+int sensorPin = A0;      // TMP36 analog output pin
+int lightSensorPin = A1; // Photoresistor analog input pin
+int soilSensorPin = A2;  // Soil moisture sensor analog input pin
+
+// Function to get temperature from TMP36
+float readTemperature() {
+    int sensorValue = analogRead(sensorPin);  // Read TMP36 sensor
+    float voltage = sensorValue * (5.0 / 1023.0);  // Convert to voltage
+    return (voltage - 0.5) * 100;  // Convert to Celsius
+}
+
+// Function to read the photoresistor value
+int readLightLevel() {
+    return analogRead(lightSensorPin);  // Read analog value from photoresistor
+}
+
+int readSoilMoisturePercentage() {
+    int rawValue = analogRead(soilSensorPin);
+    return map(rawValue, 1023, 300, 0, 100);  // Adjust 300 (wet) and 1023 (dry) based on your sensor
+}
+
+void setup() {
+    Serial.begin(9600);
+}
+
+void loop() {
+    // Read and print temperature
+    float currentTemperature = readTemperature();
+    Serial.print("Temperature: ");
+    Serial.print(currentTemperature);
+    Serial.println(" °C");
+
+    // Read and print light level
+    int lightLevel = readLightLevel();
+    Serial.print("Light Level: ");
+    Serial.println(lightLevel);
+
+    // Read and print soil moisture level
+    int soilMoisture = readSoilMoisturePercentage();
+    Serial.print("Soil Moisture: ");
+    Serial.println(soilMoisture);
+
+    delay(5000);  // Wait 5 seconds before reading again
+}
